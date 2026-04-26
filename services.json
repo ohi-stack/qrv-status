@@ -1,0 +1,14 @@
+{
+  "network": "QR-V Global Verification Network",
+  "updated": "2026-04-25T13:36:00-04:00",
+  "services": [
+    { "name": "Marketing Site", "url": "https://qrv.network", "repo": "qrv-marketing-site", "status": "monitoring" },
+    { "name": "API", "url": "https://api.qrv.network", "repo": "qrv-api", "status": "monitoring" },
+    { "name": "Registry", "url": "https://registry.qrv.network", "repo": "qrv-registry", "status": "monitoring" },
+    { "name": "Issuer Portal", "url": "https://issuer.qrv.network", "repo": "issuer-qrv", "status": "monitoring" },
+    { "name": "Verify Portal", "url": "https://verify.qrv.network", "repo": "qrv-verify", "status": "monitoring" },
+    { "name": "Explorer", "url": "https://explorer.qrv.network", "repo": "qrv-explorer", "status": "planned" },
+    { "name": "Developer Portal", "url": "https://developers.qrv.network", "repo": "qrv-developer-portal", "status": "planned" },
+    { "name": "Documentation", "url": "https://docs.qrv.network", "repo": "qrv-docs", "status": "planned" }
+  ]
+}
