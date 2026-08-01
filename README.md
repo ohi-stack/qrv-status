@@ -1,53 +1,109 @@
-# qrv-status
+# QR-V™ Network Status
 
-Public status and uptime dashboard for QR-V™ network services.
+Public uptime, dependency health, incident communication, and service-status contract for the QR-V™ Global Verification Network.
 
-## Current Production Rule
+## Canonical Public Status Page
 
-Until this repository becomes a real monitoring application, the canonical public status page is:
+Current consolidated route:
 
-```txt
+```text
 https://qrv.network/status
 ```
 
-The dedicated status subdomain may later be deployed at:
+Reserved dedicated monitoring service:
 
-```txt
+```text
 https://status.qrv.network
 ```
 
-## Services To Monitor
+The root route remains canonical until the dedicated service is deployed and validated.
 
-- `https://qrv.network/health`
-- `https://qrv.network/ready`
-- `https://verify.qrv.network/health`
-- `https://verify.qrv.network/readyz`
-- `https://registry.qrv.network/health`
-- `https://registry.qrv.network/ready`
-- `https://api.qrv.network/health`
-- `https://api.qrv.network/ready`
-- `https://issuer.qrv.network/health`
-- `https://issuer.qrv.network/readyz`
+## Monitored Services
 
-## Required App Features
+| Service | Required health | Required readiness |
+|---|---|---|
+| Root network | `https://qrv.network/healthz` | `https://qrv.network/readyz` |
+| Verification | `https://verify.qrv.network/healthz` | `https://verify.qrv.network/readyz` |
+| API | `https://api.qrv.network/healthz` | `https://api.qrv.network/readyz` |
+| Registry | `https://registry.qrv.network/healthz` | `https://registry.qrv.network/readyz` |
+| Issuer portal | `https://issuer.qrv.network/healthz` | `https://issuer.qrv.network/readyz` |
 
-1. Service status cards.
-2. Last checked timestamp.
-3. Incident history.
-4. Degraded-service labels.
-5. Public uptime summary.
-6. JSON status endpoint.
-7. No secrets or admin controls.
+Optional services:
 
-## Status Labels
+- `explorer.qrv.network`
+- `docs.qrv.network`
+- `developers.qrv.network`
+- `admin.qrv.network`
+- `wallet.qrv.network`
+- billing and webhook services
 
-- `OPERATIONAL`
-- `DEGRADED`
-- `PARTIAL_OUTAGE`
-- `MAINTENANCE`
-- `RESERVED`
-- `UNKNOWN`
+## Public Status Categories
 
-## Current Status
+```text
+OPERATIONAL
+DEGRADED
+RATE_LIMITED
+PARTIAL_OUTAGE
+MAJOR_OUTAGE
+MAINTENANCE
+RESERVED
+UNKNOWN
+```
 
-Planning repository. Public status is currently consolidated into `qrv.network/status`.
+## Status Calculation
+
+- `OPERATIONAL`: health and readiness pass within the defined latency threshold.
+- `DEGRADED`: service responds but readiness, dependency, or latency checks are impaired.
+- `RATE_LIMITED`: service is intentionally limiting requests but remains available.
+- `PARTIAL_OUTAGE`: a material feature or dependency is unavailable.
+- `MAJOR_OUTAGE`: the primary service is unreachable or cannot perform its core function.
+- `MAINTENANCE`: an announced maintenance window is active.
+- `RESERVED`: DNS or repository exists, but the service is not yet publicly launched.
+- `UNKNOWN`: monitoring cannot determine a reliable state.
+
+Never label a service operational solely because its homepage returns HTTP 200. Readiness must confirm required dependencies.
+
+## Required Dashboard Features
+
+1. Overall network status.
+2. Service cards with status, latency, version, and last checked time.
+3. Dependency-aware readiness results.
+4. Incident history and public updates.
+5. Maintenance windows.
+6. Thirty-day and ninety-day uptime summaries.
+7. JSON status endpoint.
+8. No secrets, private logs, stack traces, or admin controls.
+9. Safe handling of monitor failure without falsely reporting operational status.
+
+## JSON Status Contract
+
+```json
+{
+  "network": "QR-V Global Verification Network",
+  "status": "OPERATIONAL",
+  "checkedAt": "2026-08-01T04:29:00Z",
+  "services": [
+    {
+      "id": "verify",
+      "name": "Public Verification",
+      "url": "https://verify.qrv.network",
+      "status": "OPERATIONAL",
+      "latencyMs": 143,
+      "version": "1.0.0"
+    }
+  ]
+}
+```
+
+## Incident Severity
+
+- **SEV-1:** incorrect verification state, unauthorized issuance/revocation, key compromise, or registry corruption.
+- **SEV-2:** verification, API, registry, or issuer service materially unavailable.
+- **SEV-3:** explorer, documentation, analytics, or non-critical function degraded.
+- **SEV-4:** cosmetic or low-impact issue.
+
+## Production Requirement
+
+The status system must monitor the canonical demo lifecycle without publishing a false `VERIFIED` result. The verifier, API, and registry must agree on `QRV-PROD-CERT-000001`; disagreement is at least `DEGRADED` and may be a SEV-1 incident if user-facing results are incorrect.
+
+See `services.json` for the machine-readable monitoring inventory.
